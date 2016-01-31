@@ -8,7 +8,6 @@
  * if      (reset[t] == 1) out[t+1] = 0
  * else if (load[t] == 1)  out[t+1] = in[t]
  * else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
- * else                    out[t+1] = out[t]
  */
 
 CHIP PC {
@@ -17,4 +16,13 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+    Inc16(in=o1, out=plusplus);
+	Mux16(a=false, b=plusplus, sel=inc, out=step1);
+	Mux16(a=step1, b=in, sel=load, out=step2);
+	Mux16(a=step2, b=false, sel=reset, out=step3);
+	//choose correct input (if any)
+	Or8Way(in[0]=load ,in[1]=reset ,in[2]=inc, out=loadTest ); 
+	//load when an input is selected
+    Register(in=step3, load=loadTest, out=o1, out=out);
+    //save in register
 }
