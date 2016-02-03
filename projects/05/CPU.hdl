@@ -34,10 +34,37 @@ CHIP CPU {
                          // the current program (reset==0).
 
     OUT outM[16],        // M value output
-        writeM,          // Write to M? 
-        addressM[15],    // Address in data memory (of M)
-        pc[15];          // address of next instruction
+        writeM,          // Write to M? C (15th bit)instruction and out to M (3rd bit) 
+        addressM[15],    // Address in data memory (of M) A register value?
+        pc[15];          // address of next instruction (PC out)
 
     PARTS:
     // Put your code here:
+	Not(in=instruction[15],out=not15);
+	
+	Not(in=reset,out=ii);
+	
+	//Or(a=not15,b=jump,out=loadPC);
+	PC(in=a ,load=jump ,inc=true ,reset=reset ,out[0..14]=pc );
+	
+	Mux16(a=instruction,b=aluOut,sel=instruction[15],out=inA);
+	Or(a=not15,b=instruction[5],out=loadA);
+	ARegister(in=inA ,load=loadA ,out=a,out[0..14]=addressM);
+	Mux16(a=a, b=inM, sel=instruction[12],out=aORm);
+	
+	And(a=instruction[4],b=instruction[15],out=writeD);
+	DRegister(in=aluOut ,load=writeD ,out=d );
+	
+	ALU(x=d ,y=aORm ,zx=instruction[11] ,nx=instruction[10] ,zy=instruction[9] ,ny=instruction[8] ,f=instruction[7] ,no=instruction[6] ,out=aluOut, out=outM ,zr=aluZero ,ng=aluNegative );
+	
+	And(a=instruction[3],b=instruction[15],out=writeM);
+	
+	Not(in=aluNegative,out=aluNotNegative);
+	Not(in=aluZero, out=aluNotZero);
+	And(a=aluNotNegative, b=aluNotZero,out=aluPositive);
+	And(a=aluPositive,b=instruction[0],out=jump1);
+	And(a=aluZero,b=instruction[1],out=jump2);
+	And(a=aluNegative,b=instruction[2],out=jump3);
+	Or8Way(in[0]=jump1 ,in[1]=jump2 ,in[2]=jump3 ,out=jumppy); 
+	And(a=jumppy, b=instruction[15], out=jump);	
 }
