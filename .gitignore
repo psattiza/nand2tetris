@@ -2,3 +2,5 @@ tools/
 *.out
 *.swp
 *.zip
+*.hack
+

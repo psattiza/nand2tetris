@@ -17,7 +17,7 @@
 	D; JGT
 	@White
 	0; JMP
-	//256*512 pixles = 16384 bytes
+	//256*512 pixles = 16384 bytes, 24575 last thing
 (A)
 	@I
 	M=-1;
