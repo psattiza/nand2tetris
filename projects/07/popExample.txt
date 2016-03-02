@@ -1,0 +1,21 @@
+pop local 2
+
+@LCL #@1 pointer to local pointer
+D=M  #Load local pointer
+@2   #literal offset = 2
+D=D+A#D is now offset address
+@R13 #Store offset
+M=D
+~popD()	#Function that pops from D
+	#Puts top of stack into D
+	#Decreases stack pointer
+	@SP
+	A=M
+	D=M
+	M=M-1
+~also make a pushD()
+	Only use R13-15
+@R13
+A=M
+M=D
+

@@ -3,4 +3,5 @@ tools/
 *.swp
 *.zip
 *.hack
+*.asm
 

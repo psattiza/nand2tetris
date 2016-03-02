@@ -118,4 +118,3 @@ for instruction in instructions:
 		binaryInstruction = convertC(instruction)
 	outFile.write(binaryInstruction + "\n")
 print "We did it!"
-    
