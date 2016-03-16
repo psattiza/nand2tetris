@@ -5,12 +5,12 @@
 
 // Performs a simple calculation and returns the result.
 function SimpleFunction.test 2
-push local 0
-push local 1
+push local 0  //0
+push local 1  //0
 add
 not
-push argument 0
+push argument 0 //1234
 add
-push argument 1
+push argument 1  //37
 sub
 return
