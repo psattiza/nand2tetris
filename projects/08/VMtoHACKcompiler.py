@@ -233,7 +233,6 @@ def call(line,methodName):
 	global callReturnCounter
 	callReturnCounter+=1
 	returnLabel = "{}_{}_{}".format(methodName,line[1],callReturnCounter)
-	print returnLabel
 	re="@{}\n".format(returnLabel)
 	re+="D=A\n"
 	re+=pushD() ##push return label
@@ -258,13 +257,13 @@ def call(line,methodName):
 	re+="D=D-A\n"
 	re+="@ARG\n"
 	re+="M=D\n"
-	re+="@{}\n".format(methodName+"_"+line[1])
+	re+="@{}\n".format(line[1])
 	re+="0;JMP\n"
 	re+="({})\n".format(returnLabel)
 	return re
 
 def function(line,methodName):
-	re="({})\n".format(methodName+"_"+line[1])
+	re="({})\n".format(line[1])
 	re+="D=0\n"
 	for _ in range(int(line[2])):
 		re+=pushD()
@@ -322,7 +321,8 @@ def returnCall():
 	re+="M=D\n"		# LCL = *frame -4
 
 	re+="@R14\n"
-	##re+="0;JMP\n"
+	re+="A=M\n"
+	re+="0;JMP\n"
 	return re
 
 
@@ -371,7 +371,8 @@ def convertVMtoASM(vmfilename, outFile):
 	fileName = vmfilename
 	period = fileName.rfind(".")
 	slash = fileName.rfind("/")
-	methodName = fileName[slash+1:]
+	methodName = fileName[slash+1:period]
+	#print "Methodname = '{}'".format(methodName)
 	loaded=loadFile(vmfilename)
 	print "Appending %12s program to: %s" % ("'"+methodName+"'", outFile.name)
 	for line in loaded:
